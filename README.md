@@ -805,3 +805,202 @@ plt.legend()
 plt.title("Histogramas Estirado y Ecualizado")
 plt.show()
 ```
+## 15/03/2024 Suma, Resta y multiplicacion de fotos
+Primer codigo
+```python
+import numpy as np
+import cv2
+import matplotlib.pyplot as plt
+
+# Función mejorada para imprimir imágenes
+def imprimir(img, title="Imagen"):
+    plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))  # Convertir BGR a RGB para la correcta visualización en matplotlib
+    plt.title(title)
+    plt.axis('off')  # Ocultar los ejes para una visualización más limpia
+    plt.show()
+
+# Cargar imágenes
+X1 = cv2.imread("ImageNoVape.jpeg")
+X2 = cv2.imread("ImageVape.jpeg")
+
+# Determinar cuál imagen es más pequeña y redimensionarla
+if X1.shape[0] * X1.shape[1] < X2.shape[0] * X2.shape[1]:
+    X1_resized = cv2.resize(X1, (X2.shape[1], X2.shape[0]))  # Ajustar X1 al tamaño de X2
+    X2_resized = X2
+else:
+    X2_resized = cv2.resize(X2, (X1.shape[1], X1.shape[0]))  # Ajustar X2 al tamaño de X1
+    X1_resized = X1
+
+# Suma ponderada
+Y_suma = cv2.addWeighted(X1_resized, 0.3, X2_resized, 0.7, 0)
+
+# Conversión a int16 para manejar la sobrecarga y subcarga en operaciones
+X1_int16 = X1_resized.astype(np.int16)
+X2_int16 = X2_resized.astype(np.int16)
+
+# Resta
+Y_resta = np.clip(X1_int16 - X2_int16, 0, 255).astype(np.uint8)  # Clip y conversión a uint8
+
+# Multiplicación
+Y_multiplicacion = np.clip(X1_int16 * X2_int16 / 255, 0, 255).astype(np.uint8)  # Normalizar y clip antes de convertir a uint8
+
+# Visualización de resultados
+imprimir(Y_suma, "Suma Ponderada")
+imprimir(Y_resta, "Resta")
+imprimir(Y_multiplicacion, "Multiplicación")
+```
+Segundo Codigo
+```python
+import numpy as np
+import cv2
+import matplotlib.pyplot as plt
+
+# Función mejorada para imprimir imágenes
+def imprimir(img, title="Imagen Resultante"):
+    if len(img.shape) == 3:  # Imagen BGR (color)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        plt.imshow(img)
+    else:  # Imagen en escala de grises
+        plt.imshow(img, cmap='gray')
+    plt.title(title)
+    plt.axis('off')
+    plt.show()
+
+X1 = cv2.imread("ImageNoVape.jpeg")
+X2 = cv2.imread("ImageVape.jpeg")
+
+# Redimensionar la imagen más pequeña para que coincida con la más grande
+if X1.size < X2.size:
+    X1_resized = cv2.resize(X1, (X2.shape[1], X2.shape[0]))
+    X2_resized = X2
+    print("Redimensionando X1")
+else:
+    X2_resized = cv2.resize(X2, (X1.shape[1], X1.shape[0]))
+    X1_resized = X1
+    print("Redimensionando X2")
+
+# Suma ponderada
+Y_suma = cv2.addWeighted(X1_resized, 0.3, X2_resized, 0.7, 0)
+
+# Convertir a int16 para evitar problemas con valores negativos en resta y sobreflujo en multiplicación
+X1_int16 = X1_resized.astype(np.int16)
+X2_int16 = X2_resized.astype(np.int16)
+
+# Resta
+Y_resta = np.clip(X1_int16 - X2_int16, 0, 255).astype(np.uint8)
+
+# Multiplicación (con corrección para visualización)
+Y_multiplicacion = np.clip((X1_int16 * X2_int16) / 255, 0, 255).astype(np.uint8)
+
+# Visualizaciones
+imprimir(Y_suma, "Suma Ponderada")
+imprimir(Y_resta, "Resta")
+imprimir(Y_multiplicacion, "Multiplicación")
+```
+## 18/03/2024 Segmentacion y eliminacion de colores de imagenes
+Primer Codigo
+```python
+import numpy as np
+import cv2
+import matplotlib.pyplot as plt
+ 
+ 
+image = cv2.imread("flowers.jpg")
+image = image[:,:,(2,1,0)]
+#plt.imshow(image, cmap="gray")
+#plt.show()
+ 
+# Numero de clusters (grupos)
+k = 3
+ 
+# Cambiamos la forma
+# Junto las 3 capas
+pixel = image.reshape((-1,3))
+ 
+# Manejamos flotantes 
+pixel = np.float32(pixel)
+ 
+# Limite de iteraciones
+criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 100, 0.3)
+ 
+# Necesitamos 3 variables6
+compactness, labels, (centers) = cv2.kmeans(pixel,k,None,criteria,10,cv2.KMEANS_RANDOM_CENTERS)
+ 
+# Convertir los centros
+# centers contiene los colores (imprimir centers por consola)
+centers = np.uint8(centers)
+ 
+# Forma rata de cambiar un color
+#centers[0] = [0,0,0]
+ 
+labels = labels.flatten()
+ 
+# Juntamos los centros con los labels
+segmen = centers[labels]
+ 
+# Hacemos que segmen tenga el tamaño de la imagen original (3)
+segmen = segmen.reshape(image.shape)
+ 
+# Como eliminar un color
+l = sum(centers[0])
+for i in range(segmen.shape[0]):
+    for j in range(segmen.shape[1]):
+        if sum(segmen [i, j]) == l:
+            segmen [i,j] = 0
+plt.imshow(segmen)
+plt.show()
+ 
+ 
+# Cambiar de color en la imagen original
+l = sum(centers[0])
+for i in range(segmen.shape[0]):
+    for j in range(segmen.shape[0]):
+        if sum(segmen [i, j]) == l:
+            image [i,j] = 0
+            
+plt.imshow(image)
+plt.show()
+```
+Segundo Codigo
+```python
+import numpy as np
+import cv2
+import matplotlib.pyplot as plt
+
+# Cargar la imagen y convertirla a RGB
+image = cv2.imread("flowers.jpg")
+image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+# Definición del número de clusters
+k = 3  # Ajustar según la necesidad
+
+# Preparación de los datos para K-means
+pixels = image_rgb.reshape((-1, 3)).astype(np.float32)
+
+# Definición de criterios y aplicación de K-means
+criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 100, 0.3)
+compactness, labels, centers = cv2.kmeans(pixels, k, None, criteria, 10, cv2.KMEANS_RANDOM_CENTERS)
+
+# Conversión de los centros a uint8 y reconstrucción de la imagen segmentada
+centers = np.uint8(centers)
+labels = labels.flatten()
+segmented_image = centers[labels].reshape(image_rgb.shape)
+
+# Eliminar un color específico basado en el cluster
+to_remove = centers[0]  # Seleccionar el primer cluster como ejemplo
+mask = np.all(segmented_image == to_remove, axis=-1)
+segmented_image[mask] = [0, 0, 0]  # Establecer a negro donde coincide el color
+
+# Visualización de resultados
+plt.figure(figsize=(10, 5))
+plt.subplot(1, 2, 1)
+plt.title("Original Image")
+plt.imshow(image_rgb)
+plt.axis('off')
+
+plt.subplot(1, 2, 2)
+plt.title("Segmented and Color Removed")
+plt.imshow(segmented_image)
+plt.axis('off')
+plt.show()
+```
