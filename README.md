@@ -1004,3 +1004,169 @@ plt.imshow(segmented_image)
 plt.axis('off')
 plt.show()
 ```
+## 20/03/2024 Practico putero
+Primer ejercicio
+```python
+import numpy as np
+import cv2
+import matplotlib.pyplot as plt
+
+def Imprimir(img):
+    plt.imshow(img, cmap='gray')
+    plt.show()
+    
+Pajaro = cv2.imread("seagull.jpg")
+
+
+img_arreglada = Pajaro [:,:,(2,1,0)]
+
+#Eliminamos el cielo del background
+X1 = img_arreglada.copy()
+
+for i in range (img_arreglada.shape[0]):
+    for j in range (img_arreglada.shape[1]):
+        if X1 [i,j,2] > 150:
+            X1 [i,j] = 255
+    
+#Imprimir solo pajaro
+Imprimir(X1)
+
+P = X1[350:700,400:700]
+
+#Enmarcamos solo al pajaro
+Imprimir(P)
+
+for i in range (P.shape[0]):
+    for j in range (P.shape[1]):
+        if P[i,j,0] < 200:
+            img_arreglada[i,j] = P[i,j]
+            
+Imprimir(img_arreglada)
+```
+Segundo Ejercicio
+```Python
+import numpy as np
+import cv2
+import matplotlib.pyplot as plt
+
+
+img = cv2.imread("valeria.png")
+#plt.imshow(img, cmap="gray")
+#plt.show()
+
+def ecualizar(canal):
+    Xc = canal.copy()
+    X1 = 255 * ((Xc - Xc.min()) / (Xc.max() - Xc.min()))
+    return X1.astype(np.uint8)
+
+
+B = img[:,:,0]
+G = img[:,:,1]
+R = img[:,:,2]
+
+B_e = ecualizar(B)
+G_e = ecualizar(G)
+R_e = ecualizar(R)
+
+
+img_ecualizada = np.stack((R_e, G_e, B_e), axis=-1)
+plt.imshow(img_ecualizada)
+plt.show()
+```
+Tercer Ejercicio
+```Python
+import numpy as np
+import cv2
+import matplotlib.pyplot as plt
+
+def Imprimir(img):
+    plt.imshow(img, cmap='gray')
+    plt.show()
+    
+img = cv2.imread("redgirl.jpg")
+#plt.imshow(img, cmap="gray")
+#plt.show()
+
+B, G, R = cv2.split(img)
+Rd = R.astype(float)
+Gd = G.astype(float)
+Bd = B.astype(float)
+Zd = 1/3 * Rd + 1/3 * Gd + 1/3 * Bd
+Z = Zd.astype(np.uint8)
+
+
+img_gris = cv2.cvtColor(Z, cv2.COLOR_GRAY2BGR)
+rojo = (R > 168) & (G < 90) #R
+
+img2 = img_gris
+
+img2[rojo] = img[rojo]
+plt.imshow(cv2.cvtColor(img2, cv2.COLOR_BGR2RGB))
+plt.show()
+```
+## 25/04/2023 Kernels
+Ejercicio 1
+```python
+
+import numpy as np
+import cv2
+import matplotlib.pyplot as plt
+    
+img = cv2.imread("flowers.jpg")
+
+kernel1 = np.ones((5,5),np.float32)/30
+
+kernel2 = np.array(
+    [[-1,-1,-1,
+     -1,8,-1,
+     -1,-1,-1
+     ]])
+
+kernel3 = np.array(
+    [[55,55,55,55,
+     55,8,8,55,
+     55,55,55,55
+     ]])
+
+img1 = cv2.filter2D(src = img, ddepth= -1,kernel = kernel1)
+img2 = cv2.filter2D(src = img, ddepth= -1,kernel = kernel2)
+img3 = cv2.filter2D(src = img, ddepth= -1,kernel = kernel3)
+
+cv2.imshow("kernel1", img1)
+cv2.imshow("kernel2", img2)
+cv2.imshow("kernel3", img3)
+cv2.waitKey()
+cv2.destroyAllWindows()
+```
+Ejercicio 2
+```Python
+import numpy as np
+import cv2
+import matplotlib.pyplot as plt
+
+def Imprimir(img):
+    plt.imshow(img, cmap='gray')
+    plt.show()
+    
+img = cv2.imread("flowers.jpg")
+fila, colum,_ = img.shape
+
+M1 = np.float32([[0.5,0,0],[0,0.5,0]])
+M2 = np.float32([[0.5,0,colum/2],[0,0.5,0]])
+M3 = np.float32([[0.5,0,colum/2],[0,0.5,fila/2]])
+M4 = np.float32([[0.5,0,0],[0,0.5,fila/2]])
+#M = np.float32([[1,0,0],[0,1,0]])
+
+dst1 = cv2.warpAffine(img,M1,(colum,fila))
+dst2 = cv2.warpAffine(img,M2,(colum,fila))
+dst3 = cv2.warpAffine(img,M3,(colum,fila))
+dst4 = cv2.warpAffine(img,M4,(colum,fila))
+
+# "," es para concatenar y "+" para summar osea, unimos todas las imagenes
+out = cv2.hconcat((img, dst1 + dst2 + dst3 + dst4))
+
+cv2.imshow("out",out)
+cv2.waitKey()
+cv2.destroyAllWindows()
+```
+
