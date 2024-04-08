@@ -1212,7 +1212,65 @@ cv2.destroyAllWindows()
 ```
 Segundo Ejercicio
 ```Python
+import cv2
+import numpy as np
 
+img = cv2.imread("flowers.jpg")
+
+fila,colum,_= img.shape
+'''M = np.float32([[0.5,0,100],[0,0.5,50]])
+
+rot = cv2.getRotationMatrix2D(center=(colum/2,fila/2), angle=30, scale=1)
+
+dst = cv2.warpAffine(img, rot, (colum,fila))'''
+
+pt_A = [0,0]
+pt_B = [0,fila]
+pt_C = [colum,fila]
+pt_D = [colum,0]
+
+entrada = np.float32([pt_A,pt_B,pt_C,pt_D])
+salida1 = np.float32([
+                    [0,0],
+                    [0,fila],
+                    [colum/3,fila/2],
+                    [colum/3,0]
+                    ])
+
+salida2 = np.float32([
+                    [colum/3,fila/2],
+                    [0,fila],
+                    [colum,fila],
+                    [(2*colum)/3,fila/2]
+                    ])
+
+salida3 = np.float32([
+                    [colum,0],
+                    [colum,fila],
+                    [(2*colum)/3,fila/2],
+                    [(2*colum)/3,0]
+                    ])
+
+salida4 = np.float32([
+                    [colum/3,fila/2],
+                    [colum/3,0],
+                    [(2*colum)/3,0],
+                    [(2*colum)/3,fila/2],
+                    ])
+
+M1 = cv2.getPerspectiveTransform(entrada, salida1)
+M2 = cv2.getPerspectiveTransform(entrada, salida2)
+M3 = cv2.getPerspectiveTransform(entrada, salida3)
+M4 = cv2.getPerspectiveTransform(entrada, salida4)
+out1 = cv2.warpPerspective(img, M1, (colum,fila), flags=cv2.INTER_LINEAR)
+out2 = cv2.warpPerspective(img, M2, (colum,fila), flags=cv2.INTER_LINEAR)
+out3 = cv2.warpPerspective(img, M3, (colum,fila), flags=cv2.INTER_LINEAR)
+out4 = cv2.warpPerspective(img, M4, (colum,fila), flags=cv2.INTER_LINEAR)
+out = out1+out2+out3+out4
+
+cv2.imshow("out", out)
+cv2.waitKey()
+cv2.destroyAllWindows()
 ```
 ## 03/04/2024 Cuadricula, Puesta de texto y otros
 ```python
