@@ -14,6 +14,16 @@ Este es un formulario de examen para repasar los conceptos importantes. Aquí en
 9. [Clase 01/03/2024 Cambio y eliminacion de colores RGB](#clase-01032024-cambio-y-eliminacion-de-colores-rgb)
 10. [Clase 06/03/2024 Otro tipo de Histrogramas](#clase-06032024-otro-tipo-de-histrogramas)
 
+11. [Primer Examen](#primer-examen)
+12. [11/03/2024 Ordenacion de imagenes con Linear y reordenacion](#11/03/2024-ordenacion-de-imagenes-con-linear-y-reordenacion)
+13. [13/03/2024 Utilizacion de diferente histograma junto Aumento de brillo de imagen](#13032024-utilizacion-de-diferente-histograma-junto-aumento-de-brillo-de-imagen)
+14. [15/03/2024 Suma, Resta y multiplicacion de fotos](#15032024-suma-resta-y-multiplicacion-de-fotos)
+15. [18/03/2024 Segmentacion y eliminacion de colores de imagenes](#18032024-segmentacion-y-eliminacion-de-colores-de-imagenes)
+16. [20/03/2024 Practico putero](#20032024-practico-putero)
+17. [25/04/2023 Kernels](#25042023-kernels)
+18. [27/03/2024 uso de matrices horriblemente explicado](#27032024-uso-de-matrices-horriblemente-explicado)
+19. [03/04/2024 Cuadricula, Puesta de texto y otros](#03042024-cuadricula-puesta-de-texto-y-otros)
+20. [05/04/2024 Ultima Practica antes del examen, cambio de colores](#05042024-ultima-practica-antes-del-examen-cambio-de-colores)
 
 ## Librerias que usaremos en el examen
 
@@ -1271,7 +1281,7 @@ cv2.imshow("Imagen Cuadriculada", image)
 cv2.waitKey()
 cv2.destroyAllWindows()
 ```
-## Clase 05/04/2024 Ultima Practica antes del examen, cambio de colores.
+## 05/04/2024 Ultima Practica antes del examen, cambio de colores.
 ```python
 import cv2
 import numpy as np
