@@ -8,7 +8,7 @@ Este es un formulario de examen para repasar los conceptos importantes. Aquí en
 3. [Librerias que usaremos en el examen](#librerias-que-usaremos-en-el-examen)
 4. [Seleccion de la imagen con CV2](#seleccion-de-la-imagen-con-cv2)
 5. [Eliminación de un Canal de Color](#eliminación-de-un-canal-de-color)
-6. [Clase 23/02/2023 Deteccion de pixeles](#clase-23022023-deteccion-de-pixeles)
+6. [Clase 23/02/2023 Deteccion de pixeles y cambio a escala de grises](#clase-23022023-deteccion-de-pixeles)
 7. [Clase 26/02/2023 Pixelizacion](#clase-26022023-pixelizacion)
 8. [Clase 28/02/2024 Seleccion por color](#clase-28022024-seleccion-por-color)
 9. [Clase 01/03/2024 Cambio y eliminacion de colores RGB](#clase-01032024-cambio-y-eliminacion-de-colores-rgb)
@@ -51,7 +51,7 @@ image_sin_cielo[:,:,0] = 0
 ```
 
 ## Clase 23/02/2023 Deteccion de pixeles
-Primer codigo
+Primer codigo, a cambiar a escala de grises.
 ```python
 import numpy as np 
 import cv2
