@@ -3,10 +3,17 @@
 Este es un formulario de examen para repasar los conceptos importantes. Aquí encontrarás fragmentos de código y explicaciones para cada uno.
 
 ## Índice
+1. [Formulario de Examen](#formulario-de-examen)
+2. [Índice](#índice)
+3. [Librerias que usaremos en el examen](#librerias-que-usaremos-en-el-examen)
+4. [Seleccion de la imagen con CV2](#seleccion-de-la-imagen-con-cv2)
+5. [Eliminación de un Canal de Color](#eliminación-de-un-canal-de-color)
+6. [Clase 23/02/2023 Deteccion de pixeles](#clase-23022023-deteccion-de-pixeles)
+7. [Clase 26/02/2023 Pixelizacion](#clase-26022023-pixelizacion)
+8. [Clase 28/02/2024 Seleccion por color](#clase-28022024-seleccion-por-color)
+9. [Clase 01/03/2024 Cambio y eliminacion de colores RGB](#clase-01032024-cambio-y-eliminacion-de-colores-rgb)
+10. [Clase 06/03/2024 Otro tipo de Histrogramas](#clase-06032024-otro-tipo-de-histrogramas)
 
-1. [Librerias que usaremos en el examen](#librerias-que-usaremos-en-el-examen)
-2. [Seleccion de la imagen con CV2](#seleccion-de-la-imagen-con-cv2)
-3. [Eliminación de un Canal de Color](#eliminación-de-un-canal-de-color)
 
 ## Librerias que usaremos en el examen
 
@@ -1261,6 +1268,57 @@ for i in range(1, N + 1):
     image = cv2.line(image, inicio, final, color, grosor)
 
 cv2.imshow("Imagen Cuadriculada", image)
+cv2.waitKey()
+cv2.destroyAllWindows()
+```
+## Clase 05/04/2024 Ultima Practica antes del examen, cambio de colores.
+```python
+import cv2
+import numpy as np
+
+
+image = cv2.imread('flowers.jpg')
+
+B, G, R = cv2.split(image)
+
+#Output Normal
+# Como eliminar un color del cielo
+image_sin_cielo = image.copy()
+image_sin_cielo[:,:,0] = 0
+
+'''
+cv2.imshow("Imagen Normal", image)
+cv2.imshow("Blue", B)
+cv2.imshow("Green", G)
+cv2.imshow("Red", R)
+cv2.imshow("Imagen sin azul o cielo", image_sin_cielo)
+cv2.waitKey()
+cv2.destroyAllWindows()
+'''
+
+#Output Eliminado el color verde mas
+
+f,c,_ = image.shape
+for i in range (f):
+    for j in range(c):
+        if image[i,j,0] > 150:
+            image[i,j,:] = 0
+            
+#Output sin Verde y cielo
+'''
+cv2.imshow("Imagen recortada", image)
+cv2.waitKey()
+cv2.destroyAllWindows()
+'''
+#Cambiar Color
+for i in range (f):
+    for j in range(c):
+        if image[i,j,2] > 0:
+            image[i,j,0] = image[i,j,0] + 50
+            image[i,j,1] = image[i,j,1] - 20
+            image[i,j,2] = image[i,j,2] + 300
+
+cv2.imshow("Imagen con color cambiado", image)
 cv2.waitKey()
 cv2.destroyAllWindows()
 ```
