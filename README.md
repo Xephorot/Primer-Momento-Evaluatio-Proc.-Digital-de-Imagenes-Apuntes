@@ -1169,4 +1169,98 @@ cv2.imshow("out",out)
 cv2.waitKey()
 cv2.destroyAllWindows()
 ```
+## 27/03/2024 uso de matrices horriblemente explicado
+Primer ejercicio
+```python
+import numpy as np
+import cv2
+import matplotlib.pyplot as plt
 
+def Imprimir(img):
+    plt.imshow(img, cmap='gray')
+    plt.show()
+    
+img = cv2.imread("flowers.jpg")
+fila, colum,_ = img.shape
+
+M = np.float32([[0.5,0,100],[0,0.5,100]])
+
+rot = cv2.getRotationMatrix2D(center = (colum/2,fila/2), angle=30,scale=1)
+
+dst = cv2.warpAffine(img,rot,(colum,fila))
+
+cv2.imshow("ej",dst)
+cv2.waitKey()
+cv2.destroyAllWindows()
+```
+Segundo Ejercicio
+```Python
+
+```
+## 03/04/2024 Cuadricula, Puesta de texto y otros
+```python
+import cv2
+import numpy as np
+
+image = cv2.imread('flowers.jpg')
+B, G, R = cv2.split(image)
+
+#Letras
+font = cv2.FONT_HERSHEY_SIMPLEX
+org = (50,50)
+fontScale = 1
+color = (255,0,0)
+grosor = 2
+image = cv2.putText(image, 'OpenCV', org, font, fontScale, color, grosor)
+
+cv2.imshow("Imagen con letras", image)
+
+#Rectangulo
+inicio = (5,5)
+final = (220,220)
+color = (255,0,0)
+grosor = 2
+image = cv2.rectangle(image,inicio,final,color,grosor)
+
+cv2.imshow("Imagen con Rectangulo", image)
+
+#Weighted Image o suma de imagenes
+
+#image1 = cv2.imread('flowers.jpg')
+image1 = G
+#image2 = cv2.imread('flowers.jpg')
+image2 = B
+
+#Primera Opcion Fea (Tienen que ser del mismo tamaño) no funciona
+#weightedSumFea = cv2.add(image1, 0.5, image2, 0.4, 0)
+
+#Segunda Opcion Bonita (Tienen que ser del mismo tamaño)
+weightedSum = cv2.addWeighted(image1, 0.5, image2, 0.4, 0)
+
+cv2.imshow("Suma de imagenes fea", weightedSum)
+
+#Rayas divisoras o cuadriculas
+height, width, _ = image.shape
+
+N = 10 
+
+espacio_h = height // (N + 1)
+espacio_v = width // (N + 1)
+
+color = (0, 255, 0)
+grosor = 9
+
+for i in range(1, N + 1):
+    inicio = (0, i * espacio_h)
+    final = (width, i * espacio_h)
+    image = cv2.line(image, inicio, final, color, grosor)
+
+for i in range(1, N + 1):
+    inicio = (i * espacio_v, 0)
+    final = (i * espacio_v, height)
+    image = cv2.line(image, inicio, final, color, grosor)
+
+cv2.imshow("Imagen Cuadriculada", image)
+cv2.waitKey()
+cv2.destroyAllWindows()
+```
