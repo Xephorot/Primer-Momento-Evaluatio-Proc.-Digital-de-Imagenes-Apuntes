@@ -496,132 +496,48 @@ plt.show()
 Ejercicio 1
 ```python
 import numpy as np
-from cv2 import imread
+import cv2
 import matplotlib.pyplot as plt
- 
-#Histograma "Bonito"
-def histo (X):
-    (N,M) = X.shape
-    n=257
-    h = np.zeros((n,),np.uint8)
-    for i in range (N):
-        for j in range (M):
-            x = X[i,j]
-            h[x]= h[x] + 1
-    plt.plot(range(n),h[0:n])       
-    plt.show()   
-    
-def detalles(img):
-    print("Size = ", img.shape)
-    print("Max = ", np.max(img))
-    print("Min = ", np.min(img))
-    
-def Imprimir(imagen):
-    plt.imshow(imagen,cmap = "gray")
+
+# Mejora del histograma utilizando capacidades integradas
+def histograma_bonito(img):
+    plt.figure(figsize=(10, 4))
+    for i, color in enumerate(['r', 'g', 'b']):
+        hist = cv2.calcHist([img], [i], None, [256], [0, 256])
+        plt.plot(hist, color=color)
+    plt.xlim([0, 256])
     plt.show()
 
-#Frutos Azules
-img = imread("FRUTA AZUL.JPG")
+def imprimir(img, titulo="Imagen"):
+    if img.ndim == 3:
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    elif img.ndim == 2:
+        plt.gray()
+    plt.imshow(img)
+    plt.title(titulo)
+    plt.axis("off")
+    plt.show()
 
-img_arreglada = img [:,:,(2,1,0)]
+# Cargar y ajustar imagen
+img = cv2.imread("FRUTA AZUL.JPG")
 
-img_capas = img[:,:,0]
+# Seleccionar colores centrados en el azul
+mask_azul = cv2.inRange(img, (40, 0, 0), (255, 100, 100))
+img_resaltada = img.copy()
+img_resaltada[mask_azul == 255] = [0, 0, 255]  # Resaltar en azul
 
-#Capa 0
-R = img_arreglada[:,:,0]
-#Capa 1
-G = img_arreglada[:,:,1]
-#Capa 2
-B = img_arreglada[:,:,2]
+imprimir(img, "Original")
+imprimir(img_resaltada, "Resaltado Azul")
 
-#Centrar al color azul
-Sr = R > 40
-Sg = G > 0
-Sb = B < 100
+# Detección de bordes para resaltar el contorno
+bordes = cv2.Canny(mask_azul, 100, 200)
+img_bordes = img.copy()
+img_bordes[bordes == 255] = [0, 255, 0]  # Bordes en verde
 
-Srgb = np.concatenate((Sr,Sg,Sb), axis = 1)
+imprimir(img_bordes, "Bordes Resaltados")
 
-#Limpiando lo amarillo con lógica (AND)
-Srg = np.logical_and(Sr,Sg)
-S = np.logical_and(Srg, Sb)
-
-(N,M) = S.shape
-
-#Limpiando Impurezas por fila (Pixeles faltantes)
-Q = S
-
-for i in range(N):
-    s = np.sum(S[i,:])
-    if s < 30:
-        Q[i,:] = 0
-
-imin = 1000
-imax = 0
-jmin = 1000
-jmax = 0
-
-(N,M) = S.shape
-
-#Seleccion
-for i in range (N):
-    for j in range(M):
-        if Q[i,j] > 0:
-            if i < imin:
-                imin = i
-            if i > imax:
-                imax = i
-            if j < jmin:
-                jmin = j
-            if j > jmax:
-                jmax = j
-
-y = [imin, imin, imax, imax, imin]
-
-x = [jmin, imax, imax, jmin, jmin]
-
-#Pintar borde de la imagen
-E = np.zeros((N,M),np.uint8)
-
-for i in range(N):
-    for j in range(1,M):
-        if Q[i,j] != Q[i,j-1]:
-            E[i,j]=1
-            E[i,j-1]=1
-        
-
-for i in range(1,N):
-    for j in range(M):
-        if Q[i,j] != Q[i-1,j]:
-            E[i,j]=1
-            E[i-1,j]=1
-
-
-plt.imshow(E, cmap="gray")
-
-for i in range (N):
-    for j in range (M):
-        if E[i,j] == 1:
-            img_arreglada[i,j,:] = (0,0,1)
-
-
-#Imprimir en Escala de grises
-Rd = R.astype(float)
-Gd = G.astype(float)
-Bd = B.astype(float)
-
-Zd = 1/3 * Rd + 1/3 * Gd + 1/3 * Bd
-
-Z = Zd.astype(np.uint8)
-
-plt.imshow (Z,cmap="gray")  
-plt.show()
-            
-
-#Histograma
-plt.hist(R.flatten(), bins=255, range=(10, 250), histtype="step", color = "red")
-plt.hist(G.flatten(), bins=255, range=(10, 250), histtype="step", color = "green")
-plt.hist(B.flatten(), bins=255, range=(10, 250), histtype="step", color = "blue")
-plt.show()
+# Histogramas de las capas de color
+histograma_bonito(img)
 ```
 Ejercicio 2
 ```python

@@ -25,6 +25,7 @@ def seleccionar_area_objeto(Q, I):
 image = cv2.imread('Preparatorio/image.png')
 I = image[:, :, (2, 1, 0)] 
 
+#Escala de grises mejorada
 Z = np.mean(I.astype(float), axis=2).astype(np.uint8)
 
 Sr, Sg, Sb = I[:, :, 0] > 100, I[:, :, 1] < 150, I[:, :, 2] < 100
